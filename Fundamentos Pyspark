@@ -1,0 +1,2150 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Rafa2704/P-s_Python/blob/main/Fundamentos%20Pyspark\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "MwbnlrGvATjd",
+        "outputId": "f6eff3c8-7e19-4b30-ab4c-33cb9a98f40a"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/html": [
+              "\n",
+              "        <div>\n",
+              "            <p><b>SparkContext</b></p>\n",
+              "\n",
+              "            <p><a href=\"http://d67c05b0601a:4040\">Spark UI</a></p>\n",
+              "\n",
+              "            <dl>\n",
+              "              <dt>Version</dt>\n",
+              "                <dd><code>v2.4.5</code></dd>\n",
+              "              <dt>Master</dt>\n",
+              "                <dd><code>local[*]</code></dd>\n",
+              "              <dt>AppName</dt>\n",
+              "                <dd><code>thedataengineer.com.br</code></dd>\n",
+              "            </dl>\n",
+              "        </div>\n",
+              "        "
+            ],
+            "text/plain": [
+              "<SparkContext master=local[*] appName=thedataengineer.com.br>"
+            ]
+          },
+          "execution_count": 44,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "from pyspark.sql import SparkSession\n",
+        "spark=SparkSession.builder.master(\"local[*]\").appName(\"thedataengineer.com.br\").getOrCreate()\n",
+        "spark.sparkContext\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "dPnfKmHFATjf"
+      },
+      "outputs": [],
+      "source": [
+        "from pyspark.sql import SparkSession\n",
+        "\n",
+        "# Inicialize a SparkSession\n",
+        "#spark = SparkSession.builder.appName(\"nome_do_app\").getOrCreate()\n",
+        "\n",
+        "# Obtenha o SparkContext\n",
+        "sc = spark.sparkContext\n",
+        "\n",
+        "# Crie o RDD usando o método parallelize\n",
+        "numeros = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])\n",
+        "\n",
+        "# Agora você pode usar o RDD \"numeros\" para executar operações distribuídas com o PySpark.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "sUMRBCpkATjf",
+        "outputId": "187bc31f-2f9a-4fb1-857b-a1d8a5c8c602"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "[1, 2, 3, 4, 5]"
+            ]
+          },
+          "execution_count": 46,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "numeros.take(5)\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "8-Bx2oMWATjf",
+        "outputId": "89a85686-247f-4ced-cecc-fdf3bb523203"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "[10, 9, 8, 7, 6]"
+            ]
+          },
+          "execution_count": 47,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "numeros.top(5)\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "-gb7NxnoATjf",
+        "outputId": "932c1aa9-d5fb-48f5-88ef-5b53df643ca9"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+            ]
+          },
+          "execution_count": 48,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "numeros.collect()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "3Keh3UGZATjf",
+        "outputId": "57ec98c4-fcc7-4d7e-d916-48d83151abb6"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+---+\n",
+            "|   _1| _2|\n",
+            "+-----+---+\n",
+            "|Pedro| 10|\n",
+            "|Maria| 20|\n",
+            "| José| 40|\n",
+            "+-----+---+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "df1 = spark.createDataFrame([(\"Pedro\",10),(\"Maria\",20),(\"José\",40)])\n",
+        "#show é ação, então tudo o que foi feito anteriormente é executado, lazzy\n",
+        "df1.show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "gFGl7vsLATjf",
+        "outputId": "f09b8da9-520d-4432-da93-caac5859f4a5"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#importar dados definindo schema\n",
+        "#vamos deixar a data como string de propósito\n",
+        "from pyspark.sql.types import *\n",
+        "arqschema = \"id INT, nome STRING, status STRING, cidade STRING, vendas INT, data STRING\"\n",
+        "#o caminho pode mudar, download é a pasta que você baixou com dados de exemplo\n",
+        "despachantes = spark.read.csv(\"despachantes.csv\", header=True, schema=arqschema)\n",
+        "despachantes.show()\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "ujZbvBK8ATjg"
+      },
+      "source": [
+        "# spark sql\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "SxO3IOWwATjg"
+      },
+      "outputs": [],
+      "source": [
+        "\n",
+        "from pyspark.sql import SparkSession\n",
+        "from pyspark.sql.types import *"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "DV6aTXzRATjg",
+        "outputId": "be53bbf1-4e24-4e55-8eed-035454a25605"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+\n",
+            "|databaseName|\n",
+            "+------------+\n",
+            "|     default|\n",
+            "+------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#mostrar bancos de dados e tabelas\n",
+        "spark.sql(\"show databases\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "acLqdWaIATjh",
+        "outputId": "37359015-1e31-46fe-b005-87bf4c935c3f"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "DataFrame[]"
+            ]
+          },
+          "execution_count": 54,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "#criar banco de dados\n",
+        "spark.sql(\"create database desp\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "pyhOQp4FATjh",
+        "outputId": "501ec80d-3eb9-4d5e-e442-5d88cead2266"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "++\n",
+            "||\n",
+            "++\n",
+            "++\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "spark.sql(\"use desp\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "7slF5ZVBATjh",
+        "outputId": "d9d640b4-3c88-4c31-f93a-670105ccad87"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+\n",
+            "|databaseName|\n",
+            "+------------+\n",
+            "|     default|\n",
+            "|        desp|\n",
+            "+------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "spark.sql(\"show databases\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "WzSaQs9YATjh"
+      },
+      "outputs": [],
+      "source": [
+        "#criar tabela gerenciada\n",
+        "arqschema = \"id INT, nome STRING, status STRING, cidade STRING, vendas INT, data STRING\"\n",
+        "despachantes = spark.read.csv(\"despachantes.csv\", header=False, schema=arqschema)\n",
+        "despachantes.write.saveAsTable(\"Despachantes\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "NTxIj-YMATjh",
+        "outputId": "e8a93474-570d-43c2-bb25-b549aa898478"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#mostrar que a tabela existe\n",
+        "spark.sql(\"select * from despachantes\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "kNySy7sHATjh",
+        "outputId": "d5961f4f-d2ee-4057-82c7-401b566ff2ff"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+--------+------------+-----------+\n",
+            "|database|   tableName|isTemporary|\n",
+            "+--------+------------+-----------+\n",
+            "|    desp|despachantes|      false|\n",
+            "+--------+------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#mostra tabela do banco em execução\n",
+        "spark.sql(\"show tables\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "yC7WJj4kATjh"
+      },
+      "outputs": [],
+      "source": [
+        "# overwrite e append\n",
+        "despachantes.write.mode(\"overwrite\").saveAsTable(\"Despachantes\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "M4XUgTAaATji",
+        "outputId": "9396f97a-8545-4193-bbf7-d8e07756145b"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "++\n",
+            "||\n",
+            "++\n",
+            "++\n",
+            "\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#teste de pesistência\n",
+        "from pyspark.sql import SparkSession\n",
+        "spark.sql(\"use desp\").show()\n",
+        "#mostrar que a tabela ainda existe\n",
+        "spark.sql(\"select * from despachantes\").show()\n",
+        "despachantes.show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "PYDTv7KWATji",
+        "outputId": "722fdcf3-f612-4106-9f64-567d01893884"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#o resultado de uma consulta sem um show gera um dataframe\n",
+        "despachantes = spark.sql(\"select * from despachantes\")\n",
+        "despachantes.show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "UyFWpaE1ATji"
+      },
+      "outputs": [],
+      "source": [
+        "#criar tabela não gerenciada\n",
+        "#salvamos novamente no formato parquet, em outro diretorio\n",
+        "despachantes.write.format(\"parquet\").save(\"desparquet\")\n",
+        "#informar o caminho\n",
+        "despachantes.write.option(\"path\", \"desparquet\").saveAsTable(\"Despachantes_ng\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "xTF1Hjz1ATji",
+        "outputId": "cd80a4bf-fd6f-43c3-ac81-9d4d7fd68b1b"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "spark.sql(\"select * from Despachantes_ng\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "YJuJmDh9ATji",
+        "outputId": "eebd71a9-b5fa-4ba5-fbaf-f9ba9b079a44"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----------------------------------------------------------------------------------------------------------------------------------+\n",
+            "|createtab_stmt                                                                                                                     |\n",
+            "+-----------------------------------------------------------------------------------------------------------------------------------+\n",
+            "|CREATE TABLE `Despachantes` (`id` INT, `nome` STRING, `status` STRING, `cidade` STRING, `vendas` INT, `data` STRING)\n",
+            "USING parquet\n",
+            "|\n",
+            "+-----------------------------------------------------------------------------------------------------------------------------------+\n",
+            "\n",
+            "+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n",
+            "|createtab_stmt                                                                                                                                                                          |\n",
+            "+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n",
+            "|CREATE TABLE `Despachantes_ng` (`id` INT, `nome` STRING, `status` STRING, `cidade` STRING, `vendas` INT, `data` STRING)\n",
+            "USING parquet\n",
+            "OPTIONS (\n",
+            "  path 'file:/home/jovyan/desparquet'\n",
+            ")\n",
+            "|\n",
+            "+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#como saber se uma tabela é gerenciada ou não?\n",
+        "#podemos observar que despachantes não mostra o caminho\n",
+        "spark.sql(\"show create table Despachantes\").show(truncate=False)\n",
+        "#despachantes ng mostra, indicando que é não gerenciada\n",
+        "spark.sql(\"show create table Despachantes_ng\").show(truncate=False)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "WeNTk2qBATji",
+        "outputId": "d4a8af99-bc9b-465f-8221-6ebccce663bd"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "[Table(name='despachantes', database='desp', description=None, tableType='MANAGED', isTemporary=False),\n",
+              " Table(name='despachantes_ng', database='desp', description=None, tableType='EXTERNAL', isTemporary=False)]"
+            ]
+          },
+          "execution_count": 67,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "#outra forma:\n",
+        "spark.catalog.listTables()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "lavdLVgUATji"
+      },
+      "source": [
+        "# View"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "lF0FZFkKATji",
+        "outputId": "4add283e-9e0a-490d-d21e-6e765f4e2e2f"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "despachantes.createOrReplaceTempView(\"Despachantes_view1\")\n",
+        "spark.sql(\"select * from Despachantes_view1\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "SqZxrTdoATji"
+      },
+      "outputs": [],
+      "source": [
+        "despachantes.createOrReplaceGlobalTempView(\"Despachantes_view2\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "MdciJ548ATji",
+        "outputId": "9ea52c8d-74b3-4d45-88a6-fb8f453af1c9"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "spark.sql(\"select * from global_temp.Despachantes_view2\").show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "ORxVGv6SATji"
+      },
+      "source": [
+        "# mostrar diferentes maneiras de mostrar as informações"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "MOeE15XbATji"
+      },
+      "outputs": [],
+      "source": [
+        "from pyspark.sql import functions as Func\n",
+        "from pyspark.sql.functions import sum\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "ZYpXBBFEATjj",
+        "outputId": "a5ba9802-63d3-449f-f825-e86cf4f28f52"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "| id|               nome|status|       cidade|vendas|      data|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "|  1|   Carminda Pestana| Ativo|  Santa Maria|    23|2020-08-11|\n",
+            "|  2|    Deolinda Vilela| Ativo|Novo Hamburgo|    34|2020-03-05|\n",
+            "|  3|   Emídio Dornelles| Ativo| Porto Alegre|    34|2020-02-05|\n",
+            "|  4|Felisbela Dornelles| Ativo| Porto Alegre|    36|2020-02-05|\n",
+            "|  5|     Graça Ornellas| Ativo| Porto Alegre|    12|2020-02-05|\n",
+            "|  6|   Matilde Rebouças| Ativo| Porto Alegre|    22|2019-01-05|\n",
+            "|  7|    Noêmia   Orriça| Ativo|  Santa Maria|    45|2019-10-05|\n",
+            "|  8|      Roque Vásquez| Ativo| Porto Alegre|    65|2020-03-05|\n",
+            "|  9|      Uriel Queiroz| Ativo| Porto Alegre|    54|2018-05-05|\n",
+            "| 10|   Viviana Sequeira| Ativo| Porto Alegre|     0|2020-09-05|\n",
+            "+---+-------------------+------+-------------+------+----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#mostrar a tabela\n",
+        "spark.sql(\"Select * from Despachantes\").show()\n",
+        "despachantes.show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "uNZNHaaqATjj",
+        "outputId": "7279dcd0-490b-4b58-9d92-8de29dafd71e"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-------------------+------+\n",
+            "|               nome|vendas|\n",
+            "+-------------------+------+\n",
+            "|   Carminda Pestana|    23|\n",
+            "|    Deolinda Vilela|    34|\n",
+            "|   Emídio Dornelles|    34|\n",
+            "|Felisbela Dornelles|    36|\n",
+            "|     Graça Ornellas|    12|\n",
+            "|   Matilde Rebouças|    22|\n",
+            "|    Noêmia   Orriça|    45|\n",
+            "|      Roque Vásquez|    65|\n",
+            "|      Uriel Queiroz|    54|\n",
+            "|   Viviana Sequeira|     0|\n",
+            "+-------------------+------+\n",
+            "\n",
+            "+-------------------+------+\n",
+            "|               nome|vendas|\n",
+            "+-------------------+------+\n",
+            "|   Carminda Pestana|    23|\n",
+            "|    Deolinda Vilela|    34|\n",
+            "|   Emídio Dornelles|    34|\n",
+            "|Felisbela Dornelles|    36|\n",
+            "|     Graça Ornellas|    12|\n",
+            "|   Matilde Rebouças|    22|\n",
+            "|    Noêmia   Orriça|    45|\n",
+            "|      Roque Vásquez|    65|\n",
+            "|      Uriel Queiroz|    54|\n",
+            "|   Viviana Sequeira|     0|\n",
+            "+-------------------+------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#mostrar certas colunas\n",
+        "spark.sql(\"Select nome,vendas from Despachantes\").show()\n",
+        "despachantes.select(\"nome\",\"vendas\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "E6TzFYEDATjj",
+        "outputId": "4338464b-ef09-4924-be1e-c7a1d59e4b96"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-------------------+------+\n",
+            "|               nome|vendas|\n",
+            "+-------------------+------+\n",
+            "|   Carminda Pestana|    23|\n",
+            "|    Deolinda Vilela|    34|\n",
+            "|   Emídio Dornelles|    34|\n",
+            "|Felisbela Dornelles|    36|\n",
+            "|   Matilde Rebouças|    22|\n",
+            "|    Noêmia   Orriça|    45|\n",
+            "|      Roque Vásquez|    65|\n",
+            "|      Uriel Queiroz|    54|\n",
+            "+-------------------+------+\n",
+            "\n",
+            "+---+-------------------+------+\n",
+            "| id|               nome|vendas|\n",
+            "+---+-------------------+------+\n",
+            "|  1|   Carminda Pestana|    23|\n",
+            "|  2|    Deolinda Vilela|    34|\n",
+            "|  3|   Emídio Dornelles|    34|\n",
+            "|  4|Felisbela Dornelles|    36|\n",
+            "|  6|   Matilde Rebouças|    22|\n",
+            "|  7|    Noêmia   Orriça|    45|\n",
+            "|  8|      Roque Vásquez|    65|\n",
+            "|  9|      Uriel Queiroz|    54|\n",
+            "+---+-------------------+------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#condição lógica\n",
+        "spark.sql(\"Select nome,vendas from Despachantes where vendas > 20\").show()\n",
+        "despachantes.select(\"id\",\"nome\",\"vendas\").where(Func.col(\"vendas\") > 20).show()\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "bhN3cmigATjj",
+        "outputId": "b83bd62e-edaf-4358-cc03-d369a69cc0bc"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-------------+-----------+\n",
+            "|       cidade|sum(vendas)|\n",
+            "+-------------+-----------+\n",
+            "| Porto Alegre|        223|\n",
+            "|  Santa Maria|         68|\n",
+            "|Novo Hamburgo|         34|\n",
+            "+-------------+-----------+\n",
+            "\n",
+            "+-------------+-----------+\n",
+            "|       cidade|sum(vendas)|\n",
+            "+-------------+-----------+\n",
+            "| Porto Alegre|        223|\n",
+            "|  Santa Maria|         68|\n",
+            "|Novo Hamburgo|         34|\n",
+            "+-------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "spark.sql(\"Select cidade,sum(vendas) from Despachantes group by cidade order by 2 desc\").show()\n",
+        "despachantes.groupBy(\"cidade\").agg(sum(\"vendas\")).orderBy(Func.col(\"sum(vendas)\").desc()).show()\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "bi7vAismATjj"
+      },
+      "source": [
+        "# Joins"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "WsrpGvqbATjj"
+      },
+      "outputs": [],
+      "source": [
+        "recschema = \"idrec INT, datarec STRING, iddesp INT\"\n",
+        "reclamacoes = spark.read.csv(\"reclamacoes.csv\", header=False, schema=recschema)\n",
+        "reclamacoes.write.saveAsTable(\"reclamacoes\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "Jv56PBzjATjj",
+        "outputId": "329ec339-90d0-4b3a-c70f-47523b1b9151"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+\n",
+            "|idrec|   datarec|iddesp|\n",
+            "+-----+----------+------+\n",
+            "|    1|2020-09-12|     2|\n",
+            "|    2|2020-09-11|     2|\n",
+            "|    3|2020-10-05|     4|\n",
+            "|    4|2020-10-02|     5|\n",
+            "|    5|2020-12-06|     5|\n",
+            "|    6|2020-01-09|     5|\n",
+            "|    7|2020-01-05|     9|\n",
+            "+-----+----------+------+\n",
+            "\n",
+            "+-----+----------+------+\n",
+            "|idrec|   datarec|iddesp|\n",
+            "+-----+----------+------+\n",
+            "|    1|2020-09-12|     2|\n",
+            "|    2|2020-09-11|     2|\n",
+            "|    3|2020-10-05|     4|\n",
+            "|    4|2020-10-02|     5|\n",
+            "|    5|2020-12-06|     5|\n",
+            "|    6|2020-01-09|     5|\n",
+            "|    7|2020-01-05|     9|\n",
+            "+-----+----------+------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "reclamacoes.show()\n",
+        "spark.sql(\"select * from reclamacoes\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "T0cEJDFCATjj",
+        "outputId": "41e0d411-b024-4f42-e080-740e62492cf6"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+-------------------+\n",
+            "|idrec|   datarec|iddesp|               nome|\n",
+            "+-----+----------+------+-------------------+\n",
+            "|    1|2020-09-12|     2|    Deolinda Vilela|\n",
+            "|    2|2020-09-11|     2|    Deolinda Vilela|\n",
+            "|    3|2020-10-05|     4|Felisbela Dornelles|\n",
+            "|    4|2020-10-02|     5|     Graça Ornellas|\n",
+            "|    5|2020-12-06|     5|     Graça Ornellas|\n",
+            "|    6|2020-01-09|     5|     Graça Ornellas|\n",
+            "|    7|2020-01-05|     9|      Uriel Queiroz|\n",
+            "+-----+----------+------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#inner join\n",
+        "spark.sql(\"select reclamacoes.*, despachantes.nome from despachantes inner join reclamacoes  on (despachantes.id = reclamacoes.iddesp)\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "5GYvFfGjATjj",
+        "outputId": "bb4a89a0-b6e4-4093-ecf6-67d358b13925"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+-------------------+\n",
+            "|idrec|   datarec|iddesp|               nome|\n",
+            "+-----+----------+------+-------------------+\n",
+            "|    1|2020-09-12|     2|    Deolinda Vilela|\n",
+            "|    2|2020-09-11|     2|    Deolinda Vilela|\n",
+            "|    3|2020-10-05|     4|Felisbela Dornelles|\n",
+            "|    4|2020-10-02|     5|     Graça Ornellas|\n",
+            "|    5|2020-12-06|     5|     Graça Ornellas|\n",
+            "|    6|2020-01-09|     5|     Graça Ornellas|\n",
+            "|    7|2020-01-05|     9|      Uriel Queiroz|\n",
+            "+-----+----------+------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#righ join deve trazer o mesmo resultado, pois todas as reclamações tem um despachante\n",
+        "spark.sql(\"select reclamacoes.*, despachantes.nome from despachantes right join reclamacoes  on (despachantes.id = reclamacoes.iddesp)\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "FEFn-1WXATjj",
+        "outputId": "2d5bc36e-dfc3-49f0-f82c-a67f927ba84a"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+-------------------+\n",
+            "|idrec|   datarec|iddesp|               nome|\n",
+            "+-----+----------+------+-------------------+\n",
+            "| null|      null|  null|   Carminda Pestana|\n",
+            "|    2|2020-09-11|     2|    Deolinda Vilela|\n",
+            "|    1|2020-09-12|     2|    Deolinda Vilela|\n",
+            "| null|      null|  null|   Emídio Dornelles|\n",
+            "|    3|2020-10-05|     4|Felisbela Dornelles|\n",
+            "|    6|2020-01-09|     5|     Graça Ornellas|\n",
+            "|    5|2020-12-06|     5|     Graça Ornellas|\n",
+            "|    4|2020-10-02|     5|     Graça Ornellas|\n",
+            "| null|      null|  null|   Matilde Rebouças|\n",
+            "| null|      null|  null|    Noêmia   Orriça|\n",
+            "| null|      null|  null|      Roque Vásquez|\n",
+            "|    7|2020-01-05|     9|      Uriel Queiroz|\n",
+            "| null|      null|  null|   Viviana Sequeira|\n",
+            "+-----+----------+------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#um left join traz mais colunas e campos nulos, pois alguns despachantes não tem reclações\n",
+        "spark.sql(\"select reclamacoes.*, despachantes.nome from despachantes left join reclamacoes  on (despachantes.id = reclamacoes.iddesp)\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "-Ib2sEsQATjr",
+        "outputId": "c31577f6-fdc7-4558-bf3d-1c7c222ef85f"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+-------------------+\n",
+            "|idrec|   datarec|iddesp|               nome|\n",
+            "+-----+----------+------+-------------------+\n",
+            "|    2|2020-09-11|     2|    Deolinda Vilela|\n",
+            "|    1|2020-09-12|     2|    Deolinda Vilela|\n",
+            "|    3|2020-10-05|     4|Felisbela Dornelles|\n",
+            "|    6|2020-01-09|     5|     Graça Ornellas|\n",
+            "|    5|2020-12-06|     5|     Graça Ornellas|\n",
+            "|    4|2020-10-02|     5|     Graça Ornellas|\n",
+            "|    7|2020-01-05|     9|      Uriel Queiroz|\n",
+            "+-----+----------+------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#inner join\n",
+        "despachantes.join(reclamacoes,despachantes.id == reclamacoes.iddesp, \"inner\").select(\"idrec\",\"datarec\",\"iddesp\",\"nome\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "RQK-y_vKATjs",
+        "outputId": "ee7a9e1e-7d54-4bda-bcfc-aa25df0034c9"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+-------------------+\n",
+            "|idrec|   datarec|iddesp|               nome|\n",
+            "+-----+----------+------+-------------------+\n",
+            "|    1|2020-09-12|     2|    Deolinda Vilela|\n",
+            "|    2|2020-09-11|     2|    Deolinda Vilela|\n",
+            "|    3|2020-10-05|     4|Felisbela Dornelles|\n",
+            "|    4|2020-10-02|     5|     Graça Ornellas|\n",
+            "|    5|2020-12-06|     5|     Graça Ornellas|\n",
+            "|    6|2020-01-09|     5|     Graça Ornellas|\n",
+            "|    7|2020-01-05|     9|      Uriel Queiroz|\n",
+            "+-----+----------+------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#right\n",
+        "despachantes.join(reclamacoes,despachantes.id == reclamacoes.iddesp, \"right\").select(\"idrec\",\"datarec\",\"iddesp\",\"nome\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "6yYrCFI7ATjs",
+        "outputId": "52158a4c-370a-4680-cf55-b79107ff835b"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+-----+----------+------+-------------------+\n",
+            "|idrec|   datarec|iddesp|               nome|\n",
+            "+-----+----------+------+-------------------+\n",
+            "|    1|2020-09-12|     2|    Deolinda Vilela|\n",
+            "|    2|2020-09-11|     2|    Deolinda Vilela|\n",
+            "|    3|2020-10-05|     4|Felisbela Dornelles|\n",
+            "|    4|2020-10-02|     5|     Graça Ornellas|\n",
+            "|    5|2020-12-06|     5|     Graça Ornellas|\n",
+            "|    6|2020-01-09|     5|     Graça Ornellas|\n",
+            "|    7|2020-01-05|     9|      Uriel Queiroz|\n",
+            "+-----+----------+------+-------------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#left\n",
+        "despachantes.join(reclamacoes,despachantes.id == reclamacoes.iddesp, \"right\").select(\"idrec\",\"datarec\",\"iddesp\",\"nome\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "AM-2M4NOATjs"
+      },
+      "outputs": [],
+      "source": [
+        "import pyspark.sql.functions as F\n",
+        "from pyspark.sql import SparkSession\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "5ZPxEoHXATjs",
+        "outputId": "5a855f21-86db-4824-a84a-13ec66939d19"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+\n",
+            "|databaseName|\n",
+            "+------------+\n",
+            "|     default|\n",
+            "|        desp|\n",
+            "+------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "spark.sql(\"SHOW DATABASES\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "3AZoIInJATjs"
+      },
+      "source": [
+        "# ATIVIDADES CRIAR UM DW NO SPARK\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "zMrxnkQRATjs",
+        "outputId": "a5f05a1a-3543-4a59-fb25-e85b528e2645"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "DataFrame[]"
+            ]
+          },
+          "execution_count": 99,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "#criar banco de dados\n",
+        "spark.sql(\"create database VendasVarejo\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "oTDe9GU9ATjs",
+        "outputId": "1bbdc5c3-dc9e-4ea5-84a7-a9071a2a5cc3"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+\n",
+            "|databaseName|\n",
+            "+------------+\n",
+            "|     default|\n",
+            "|        desp|\n",
+            "|vendasvarejo|\n",
+            "+------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#mostrando os banco de dados\n",
+        "spark.sql(\"SHOW DATABASES\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "tsV0PV--ATjs",
+        "outputId": "9a961d85-7349-4d7a-e14e-217b6038bb32"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "++\n",
+            "||\n",
+            "++\n",
+            "++\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#usando o banco de dados vendasvarejo\n",
+        "spark.sql(\"use vendasvarejo\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "SCCgqF-TATjt",
+        "outputId": "8eb51a99-9093-4448-922c-b3f41103e65c"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---------+--------------------+------+------+--------+\n",
+            "|ClienteID|             Cliente|Estado|Genero|  Status|\n",
+            "+---------+--------------------+------+------+--------+\n",
+            "|        1|Adelina Buenaventura|    RJ|     M|  Silver|\n",
+            "|        2|        Adelino Gago|    RJ|     M|  Silver|\n",
+            "|        3|     Adolfo Patrício|    PE|     M|  Silver|\n",
+            "|        4|    Adriana Guedelha|    RO|     F|Platinum|\n",
+            "|        5|       Adélio Lisboa|    SE|     M|  Silver|\n",
+            "|        6|       Adérito Bahía|    MA|     M|  Silver|\n",
+            "|        7|       Aida Dorneles|    RN|     F|  Silver|\n",
+            "|        8|   Alarico Quinterno|    AC|     M|  Silver|\n",
+            "|        9|    Alberto Cezimbra|    AM|     M|  Silver|\n",
+            "|       10|    Alberto Monsanto|    RN|     M|    Gold|\n",
+            "|       11|       Albino Canela|    AC|     M|  Silver|\n",
+            "|       12|     Alceste Varanda|    RR|     F|  Silver|\n",
+            "|       13|  Alcides Carvalhais|    RO|     M|  Silver|\n",
+            "|       14|        Aldo Martins|    GO|     M|  Silver|\n",
+            "|       15|   Alexandra Tabares|    MG|     F|  Silver|\n",
+            "|       16|      Alfredo Cotrim|    SC|     M|  Silver|\n",
+            "|       17|     Almeno Figueira|    SC|     M|  Silver|\n",
+            "|       18|      Alvito Peralta|    AM|     M|  Silver|\n",
+            "|       19|     Amadeu Martinho|    RN|     M|  Silver|\n",
+            "|       20|      Amélia Estévez|    PE|     F|  Silver|\n",
+            "+---------+--------------------+------+------+--------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#abrindo arquivo parquet clientes e gravando dentro do banco de dados\n",
+        "clientes = spark.read.format(\"parquet\").load(\"Clientes.parquet\")\n",
+        "clientes.show()\n",
+        "clientes.write.saveAsTable(\"Clientes\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "6SZgJrySATjt",
+        "outputId": "11cb4428-5947-4cf5-9628-53d7cb30d49a"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---------+--------------------+------+------+--------+\n",
+            "|ClienteID|             Cliente|Estado|Genero|  Status|\n",
+            "+---------+--------------------+------+------+--------+\n",
+            "|        1|Adelina Buenaventura|    RJ|     M|  Silver|\n",
+            "|        2|        Adelino Gago|    RJ|     M|  Silver|\n",
+            "|        3|     Adolfo Patrício|    PE|     M|  Silver|\n",
+            "|        4|    Adriana Guedelha|    RO|     F|Platinum|\n",
+            "|        5|       Adélio Lisboa|    SE|     M|  Silver|\n",
+            "|        6|       Adérito Bahía|    MA|     M|  Silver|\n",
+            "|        7|       Aida Dorneles|    RN|     F|  Silver|\n",
+            "|        8|   Alarico Quinterno|    AC|     M|  Silver|\n",
+            "|        9|    Alberto Cezimbra|    AM|     M|  Silver|\n",
+            "|       10|    Alberto Monsanto|    RN|     M|    Gold|\n",
+            "|       11|       Albino Canela|    AC|     M|  Silver|\n",
+            "|       12|     Alceste Varanda|    RR|     F|  Silver|\n",
+            "|       13|  Alcides Carvalhais|    RO|     M|  Silver|\n",
+            "|       14|        Aldo Martins|    GO|     M|  Silver|\n",
+            "|       15|   Alexandra Tabares|    MG|     F|  Silver|\n",
+            "|       16|      Alfredo Cotrim|    SC|     M|  Silver|\n",
+            "|       17|     Almeno Figueira|    SC|     M|  Silver|\n",
+            "|       18|      Alvito Peralta|    AM|     M|  Silver|\n",
+            "|       19|     Amadeu Martinho|    RN|     M|  Silver|\n",
+            "|       20|      Amélia Estévez|    PE|     F|  Silver|\n",
+            "+---------+--------------------+------+------+--------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando a tabela Clientes\n",
+        "spark.sql(\"Select * from Clientes\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "usZ_-PIhATjt",
+        "outputId": "c84bac39-d104-473d-8cd8-73eb057c5681"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+------------------+-----------+\n",
+            "|    database|         tableName|isTemporary|\n",
+            "+------------+------------------+-----------+\n",
+            "|vendasvarejo|          clientes|      false|\n",
+            "|            |      despachantes|       true|\n",
+            "|            |despachantes_view1|       true|\n",
+            "+------------+------------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando se salvou a tabela dentro do banco\n",
+        "spark.sql(\"SHOW TABLES\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "HSfoiqImATjt",
+        "outputId": "7afde07f-32b6-4c2c-c8ab-2e0d18cc9556"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+--------+----------+---------+---------+--------+\n",
+            "|VendasID|VendedorID|ClienteID|     Data|   Total|\n",
+            "+--------+----------+---------+---------+--------+\n",
+            "|       1|         1|       91| 1/1/2019|  8053.6|\n",
+            "|       2|         6|      185| 1/1/2020|   150.4|\n",
+            "|       3|         7|       31| 2/1/2020|  6087.0|\n",
+            "|       4|         5|       31| 2/1/2019| 13828.6|\n",
+            "|       5|         5|       31| 3/1/2018|26096.66|\n",
+            "|       6|         5|       31| 4/1/2020| 18402.0|\n",
+            "|       7|         5|       31| 6/1/2019|  7524.2|\n",
+            "|       8|         5|      186| 6/1/2019| 12036.6|\n",
+            "|       9|         7|       91| 6/1/2020| 2804.75|\n",
+            "|      10|         2|      202| 6/1/2020|  8852.0|\n",
+            "|      11|         7|       58| 8/1/2019|16545.25|\n",
+            "|      12|         7|       58| 9/1/2018|11411.88|\n",
+            "|      13|         7|       58|10/1/2019| 15829.7|\n",
+            "|      14|         3|      249|12/1/2020| 6154.36|\n",
+            "|      15|         4|      249|12/1/2018| 3255.08|\n",
+            "|      16|         7|      192|13/1/2020| 2901.25|\n",
+            "|      17|         2|       79|13/1/2019| 15829.7|\n",
+            "|      18|        10|       79|14/1/2019|16996.36|\n",
+            "|      19|        10|      191|14/1/2019|   155.0|\n",
+            "|      20|         9|      218|15/1/2018|  131.75|\n",
+            "+--------+----------+---------+---------+--------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#lendo e gravando tabela vendas no bancom de dados\n",
+        "vendas = spark.read.format(\"parquet\").load(\"Vendas.parquet\")\n",
+        "vendas.show()\n",
+        "vendas.write.saveAsTable(\"Vendas\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "BeYKh6QEATjt",
+        "outputId": "ccb6ac92-3a15-4854-e532-d7d6a9c7b2fe"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+------------------+-----------+\n",
+            "|    database|         tableName|isTemporary|\n",
+            "+------------+------------------+-----------+\n",
+            "|vendasvarejo|          clientes|      false|\n",
+            "|vendasvarejo|            vendas|      false|\n",
+            "|            |      despachantes|       true|\n",
+            "|            |despachantes_view1|       true|\n",
+            "+------------+------------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando se salvou a tabela dentro do banco\n",
+        "spark.sql(\"SHOW TABLES\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "GchBzi81ATjt",
+        "outputId": "5d9b57c0-b299-440a-dbe7-5bb58282d023"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---------+--------+----------+-------------+----------+--------+----------------+\n",
+            "|ProdutoID|VendasID|Quantidade|ValorUnitario|ValorTotal|Desconto|TotalComDesconto|\n",
+            "+---------+--------+----------+-------------+----------+--------+----------------+\n",
+            "|        2|     400|         2|       9201.0|   18402.0| 6256,68|        12145.32|\n",
+            "|        2|     385|         2|       9201.0|   18402.0| 5704,62|        12697.38|\n",
+            "|        4|     395|         2|       6892.2|   13784.4| 5100,23|         8684.17|\n",
+            "|        4|     367|         2|       6509.3|   13018.6| 4816,88|         8201.72|\n",
+            "|        2|     380|         2|      7038.77|  14077.54| 4364,04|          9713.5|\n",
+            "|        2|     346|         2|       8280.9|   16561.8| 4140,45|        12421.35|\n",
+            "|        2|     339|         2|       8280.9|   16561.8| 3312,36|        13249.44|\n",
+            "|        2|     397|         1|       9201.0|    9201.0| 3312,36|         5888.64|\n",
+            "|        1|     346|         2|       7966.8|   15933.6| 3186,72|        12746.88|\n",
+            "|        2|     264|         2|       8280.9|   16561.8| 3146,74|        13415.06|\n",
+            "|        4|     355|         2|      5858.37|  11716.74| 3046,35|         8670.39|\n",
+            "|        2|     376|         1|       8280.9|    8280.9| 2981,12|         5299.78|\n",
+            "|        2|     374|         1|       9201.0|    9201.0| 2944,32|         6256.68|\n",
+            "|        1|     397|         1|       7524.2|    7524.2| 2859,20|          4665.0|\n",
+            "|        2|     303|         2|       8280.9|   16561.8| 2815,51|        13746.29|\n",
+            "|        4|     358|         2|       6509.3|   13018.6| 2733,91|        10284.69|\n",
+            "|        4|     374|         1|       7658.0|    7658.0| 2527,14|         5130.86|\n",
+            "|        3|     336|         2|       4255.0|    8510.0| 2467,90|          6042.1|\n",
+            "|        1|     399|         1|      6771.78|   6771.78| 2437,84|         4333.94|\n",
+            "|        1|     292|         2|      6771.78|  13543.56| 2437,84|        11105.72|\n",
+            "+---------+--------+----------+-------------+----------+--------+----------------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#lendo e gravando itens_vendas no banco\n",
+        "itens_vendas = spark.read.format(\"parquet\").load(\"ItensVendas.parquet\")\n",
+        "itens_vendas.show()\n",
+        "itens_vendas.write.saveAsTable(\"Itens_vendas\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "cNb54EsOATjt",
+        "outputId": "3e9c9ef8-6539-4c9b-af75-b89844872ca4"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+------------------+-----------+\n",
+            "|    database|         tableName|isTemporary|\n",
+            "+------------+------------------+-----------+\n",
+            "|vendasvarejo|          clientes|      false|\n",
+            "|vendasvarejo|      itens_vendas|      false|\n",
+            "|vendasvarejo|            vendas|      false|\n",
+            "|            |      despachantes|       true|\n",
+            "|            |despachantes_view1|       true|\n",
+            "+------------+------------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando se salvou a tabela dentro do banco\n",
+        "spark.sql(\"SHOW TABLES\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "MMp93LGqATjt",
+        "outputId": "a09cc727-b0b7-42f2-e838-b1e8d3444df7"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---------+--------------------+---------+\n",
+            "|ProdutoID|             Produto|    Preco|\n",
+            "+---------+--------------------+---------+\n",
+            "|        1|Bicicleta Aro 29 ...|8.852,00 |\n",
+            "|        2|Bicicleta Altools...|9.201,00 |\n",
+            "|        3|Bicicleta Gts Adv...|4.255,00 |\n",
+            "|        4|Bicicleta Trinc C...|7.658,00 |\n",
+            "|        5|Bicicleta Gometws...|2.966,00 |\n",
+            "|        6|Bicicleta Gometws...|2.955,00 |\n",
+            "|        7|Capacete Gometws ...|  155,00 |\n",
+            "|        8|Luva De Ciclismo ...|  188,00 |\n",
+            "|        9|Bermuda Predactor...|  115,00 |\n",
+            "|       10|Camiseta Predacto...|  135,00 |\n",
+            "+---------+--------------------+---------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "produtos = spark.read.format(\"parquet\").load(\"Produtos.parquet\")\n",
+        "produtos.show()\n",
+        "produtos.write.saveAsTable(\"Produtos\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "NIgPHJloATju",
+        "outputId": "a8d92fec-dd18-4536-9447-23e588f66194"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+------------------+-----------+\n",
+            "|    database|         tableName|isTemporary|\n",
+            "+------------+------------------+-----------+\n",
+            "|vendasvarejo|          clientes|      false|\n",
+            "|vendasvarejo|      itens_vendas|      false|\n",
+            "|vendasvarejo|          produtos|      false|\n",
+            "|vendasvarejo|            vendas|      false|\n",
+            "|            |      despachantes|       true|\n",
+            "|            |despachantes_view1|       true|\n",
+            "+------------+------------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando se salvou a tabela dentro do banco\n",
+        "spark.sql(\"SHOW TABLES\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "p01fXeP4ATju",
+        "outputId": "183addbe-2e77-46ac-b032-a3efaa8a8a6c"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+----------+----------------+\n",
+            "|VendedorID|        Vendedor|\n",
+            "+----------+----------------+\n",
+            "|         1|    Armando Lago|\n",
+            "|         2|Capitolino Bahía|\n",
+            "|         3|   Daniel Pirajá|\n",
+            "|         4| Godo Capiperibe|\n",
+            "|         5|  Hélio Liberato|\n",
+            "|         6|   Iberê Lacerda|\n",
+            "|         7|Jéssica Castelão|\n",
+            "|         8| Napoleão Méndez|\n",
+            "|         9|    Simão Rivero|\n",
+            "|        10|  Tobias Furtado|\n",
+            "+----------+----------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "vendedores = spark.read.format(\"parquet\").load(\"Vendedores.parquet\")\n",
+        "vendedores.show()\n",
+        "vendedores.write.saveAsTable(\"Vendedores\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "99C3BOv0ATju",
+        "outputId": "b29802d4-c60b-4c31-a028-0dab9acd4763"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+------------+------------------+-----------+\n",
+            "|    database|         tableName|isTemporary|\n",
+            "+------------+------------------+-----------+\n",
+            "|vendasvarejo|          clientes|      false|\n",
+            "|vendasvarejo|      itens_vendas|      false|\n",
+            "|vendasvarejo|          produtos|      false|\n",
+            "|vendasvarejo|            vendas|      false|\n",
+            "|vendasvarejo|        vendedores|      false|\n",
+            "|            |      despachantes|       true|\n",
+            "|            |despachantes_view1|       true|\n",
+            "+------------+------------------+-----------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando se salvou a tabela dentro do banco\n",
+        "spark.sql(\"SHOW TABLES\").show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "50suqEbfATju"
+      },
+      "source": [
+        "# Fazer joins agora"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "DfIqdWeJATju",
+        "outputId": "69cc90ad-e9a7-4acf-fa3a-11b326604cc0"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---------+--------------------+------+------+--------+\n",
+            "|ClienteID|             Cliente|Estado|Genero|  Status|\n",
+            "+---------+--------------------+------+------+--------+\n",
+            "|        1|Adelina Buenaventura|    RJ|     M|  Silver|\n",
+            "|        2|        Adelino Gago|    RJ|     M|  Silver|\n",
+            "|        3|     Adolfo Patrício|    PE|     M|  Silver|\n",
+            "|        4|    Adriana Guedelha|    RO|     F|Platinum|\n",
+            "|        5|       Adélio Lisboa|    SE|     M|  Silver|\n",
+            "|        6|       Adérito Bahía|    MA|     M|  Silver|\n",
+            "|        7|       Aida Dorneles|    RN|     F|  Silver|\n",
+            "|        8|   Alarico Quinterno|    AC|     M|  Silver|\n",
+            "|        9|    Alberto Cezimbra|    AM|     M|  Silver|\n",
+            "|       10|    Alberto Monsanto|    RN|     M|    Gold|\n",
+            "|       11|       Albino Canela|    AC|     M|  Silver|\n",
+            "|       12|     Alceste Varanda|    RR|     F|  Silver|\n",
+            "|       13|  Alcides Carvalhais|    RO|     M|  Silver|\n",
+            "|       14|        Aldo Martins|    GO|     M|  Silver|\n",
+            "|       15|   Alexandra Tabares|    MG|     F|  Silver|\n",
+            "|       16|      Alfredo Cotrim|    SC|     M|  Silver|\n",
+            "|       17|     Almeno Figueira|    SC|     M|  Silver|\n",
+            "|       18|      Alvito Peralta|    AM|     M|  Silver|\n",
+            "|       19|     Amadeu Martinho|    RN|     M|  Silver|\n",
+            "|       20|      Amélia Estévez|    PE|     F|  Silver|\n",
+            "+---------+--------------------+------+------+--------+\n",
+            "only showing top 20 rows\n",
+            "\n",
+            "+---------+--------+----------+-------------+----------+--------+----------------+\n",
+            "|ProdutoID|VendasID|Quantidade|ValorUnitario|ValorTotal|Desconto|TotalComDesconto|\n",
+            "+---------+--------+----------+-------------+----------+--------+----------------+\n",
+            "|        2|     400|         2|       9201.0|   18402.0| 6256,68|        12145.32|\n",
+            "|        2|     385|         2|       9201.0|   18402.0| 5704,62|        12697.38|\n",
+            "|        4|     395|         2|       6892.2|   13784.4| 5100,23|         8684.17|\n",
+            "|        4|     367|         2|       6509.3|   13018.6| 4816,88|         8201.72|\n",
+            "|        2|     380|         2|      7038.77|  14077.54| 4364,04|          9713.5|\n",
+            "|        2|     346|         2|       8280.9|   16561.8| 4140,45|        12421.35|\n",
+            "|        2|     339|         2|       8280.9|   16561.8| 3312,36|        13249.44|\n",
+            "|        2|     397|         1|       9201.0|    9201.0| 3312,36|         5888.64|\n",
+            "|        1|     346|         2|       7966.8|   15933.6| 3186,72|        12746.88|\n",
+            "|        2|     264|         2|       8280.9|   16561.8| 3146,74|        13415.06|\n",
+            "|        4|     355|         2|      5858.37|  11716.74| 3046,35|         8670.39|\n",
+            "|        2|     376|         1|       8280.9|    8280.9| 2981,12|         5299.78|\n",
+            "|        2|     374|         1|       9201.0|    9201.0| 2944,32|         6256.68|\n",
+            "|        1|     397|         1|       7524.2|    7524.2| 2859,20|          4665.0|\n",
+            "|        2|     303|         2|       8280.9|   16561.8| 2815,51|        13746.29|\n",
+            "|        4|     358|         2|       6509.3|   13018.6| 2733,91|        10284.69|\n",
+            "|        4|     374|         1|       7658.0|    7658.0| 2527,14|         5130.86|\n",
+            "|        3|     336|         2|       4255.0|    8510.0| 2467,90|          6042.1|\n",
+            "|        1|     399|         1|      6771.78|   6771.78| 2437,84|         4333.94|\n",
+            "|        1|     292|         2|      6771.78|  13543.56| 2437,84|        11105.72|\n",
+            "+---------+--------+----------+-------------+----------+--------+----------------+\n",
+            "only showing top 20 rows\n",
+            "\n",
+            "+---------+--------------------+---------+\n",
+            "|ProdutoID|             Produto|    Preco|\n",
+            "+---------+--------------------+---------+\n",
+            "|        1|Bicicleta Aro 29 ...|8.852,00 |\n",
+            "|        2|Bicicleta Altools...|9.201,00 |\n",
+            "|        3|Bicicleta Gts Adv...|4.255,00 |\n",
+            "|        4|Bicicleta Trinc C...|7.658,00 |\n",
+            "|        5|Bicicleta Gometws...|2.966,00 |\n",
+            "|        6|Bicicleta Gometws...|2.955,00 |\n",
+            "|        7|Capacete Gometws ...|  155,00 |\n",
+            "|        8|Luva De Ciclismo ...|  188,00 |\n",
+            "|        9|Bermuda Predactor...|  115,00 |\n",
+            "|       10|Camiseta Predacto...|  135,00 |\n",
+            "+---------+--------------------+---------+\n",
+            "\n",
+            "+--------+----------+---------+---------+--------+\n",
+            "|VendasID|VendedorID|ClienteID|     Data|   Total|\n",
+            "+--------+----------+---------+---------+--------+\n",
+            "|       1|         1|       91| 1/1/2019|  8053.6|\n",
+            "|       2|         6|      185| 1/1/2020|   150.4|\n",
+            "|       3|         7|       31| 2/1/2020|  6087.0|\n",
+            "|       4|         5|       31| 2/1/2019| 13828.6|\n",
+            "|       5|         5|       31| 3/1/2018|26096.66|\n",
+            "|       6|         5|       31| 4/1/2020| 18402.0|\n",
+            "|       7|         5|       31| 6/1/2019|  7524.2|\n",
+            "|       8|         5|      186| 6/1/2019| 12036.6|\n",
+            "|       9|         7|       91| 6/1/2020| 2804.75|\n",
+            "|      10|         2|      202| 6/1/2020|  8852.0|\n",
+            "|      11|         7|       58| 8/1/2019|16545.25|\n",
+            "|      12|         7|       58| 9/1/2018|11411.88|\n",
+            "|      13|         7|       58|10/1/2019| 15829.7|\n",
+            "|      14|         3|      249|12/1/2020| 6154.36|\n",
+            "|      15|         4|      249|12/1/2018| 3255.08|\n",
+            "|      16|         7|      192|13/1/2020| 2901.25|\n",
+            "|      17|         2|       79|13/1/2019| 15829.7|\n",
+            "|      18|        10|       79|14/1/2019|16996.36|\n",
+            "|      19|        10|      191|14/1/2019|   155.0|\n",
+            "|      20|         9|      218|15/1/2018|  131.75|\n",
+            "+--------+----------+---------+---------+--------+\n",
+            "only showing top 20 rows\n",
+            "\n",
+            "+----------+----------------+\n",
+            "|VendedorID|        Vendedor|\n",
+            "+----------+----------------+\n",
+            "|         1|    Armando Lago|\n",
+            "|         2|Capitolino Bahía|\n",
+            "|         3|   Daniel Pirajá|\n",
+            "|         4| Godo Capiperibe|\n",
+            "|         5|  Hélio Liberato|\n",
+            "|         6|   Iberê Lacerda|\n",
+            "|         7|Jéssica Castelão|\n",
+            "|         8| Napoleão Méndez|\n",
+            "|         9|    Simão Rivero|\n",
+            "|        10|  Tobias Furtado|\n",
+            "+----------+----------------+\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#verificando a tabela Clientes\n",
+        "spark.sql(\"Select * from Clientes\").show()\n",
+        "spark.sql(\"Select * from itens_vendas\").show()\n",
+        "spark.sql(\"Select * from produtos\").show()\n",
+        "spark.sql(\"Select * from vendas\").show()\n",
+        "spark.sql(\"Select * from vendedores\").show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "J9K6FbOkATjv",
+        "outputId": "8ce0c652-5fad-40c9-896d-b5da3fbb2cc9"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "+---------+--------+----------+----------+\n",
+            "|ProdutoID|VendasID|ValorTotal|VendedorID|\n",
+            "+---------+--------+----------+----------+\n",
+            "|        2|     400|   18402.0|         6|\n",
+            "|        2|     385|   18402.0|         5|\n",
+            "|        4|     395|   13784.4|         5|\n",
+            "|        4|     367|   13018.6|         3|\n",
+            "|        2|     380|  14077.54|         9|\n",
+            "|        2|     346|   16561.8|         6|\n",
+            "|        2|     339|   16561.8|         3|\n",
+            "|        2|     397|    9201.0|         5|\n",
+            "|        1|     346|   15933.6|         6|\n",
+            "|        2|     264|   16561.8|         5|\n",
+            "|        4|     355|  11716.74|         5|\n",
+            "|        2|     376|    8280.9|         7|\n",
+            "|        2|     374|    9201.0|         1|\n",
+            "|        1|     397|    7524.2|         5|\n",
+            "|        2|     303|   16561.8|         1|\n",
+            "|        4|     358|   13018.6|         7|\n",
+            "|        4|     374|    7658.0|         1|\n",
+            "|        3|     336|    8510.0|         5|\n",
+            "|        1|     399|   6771.78|         4|\n",
+            "|        1|     292|  13543.56|         7|\n",
+            "+---------+--------+----------+----------+\n",
+            "only showing top 20 rows\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "#inner join\n",
+        "itens_vendas = spark.sql(\"select itens_vendas.ProdutoID, itens_vendas.VendasID, itens_vendas.ValorTotal, vendas.VendedorID from itens_vendas inner join vendas  on (itens_vendas.VendasID = vendas.VendasID)\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "8m9bk6flATjv"
+      },
+      "outputs": [],
+      "source": [
+        "#inner join\n",
+        "itens_vendas = spark.sql(\"select itens_vendas.ProdutoID, itens_vendas.VendasID, itens_vendas.ValorTotal, vendas.VendedorID from itens_vendas inner join vendas  on (itens_vendas.VendasID = vendas.VendasID)\").show()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "sgHBzwXiATjv",
+        "outputId": "f4c5f840-9206-497e-e194-ad05d1b2a551"
+      },
+      "outputs": [
+        {
+          "ename": "SyntaxError",
+          "evalue": "invalid syntax (<ipython-input-143-9efb1ce74e9d>, line 1)",
+          "output_type": "error",
+          "traceback": [
+            "\u001b[0;36m  File \u001b[0;32m\"<ipython-input-143-9efb1ce74e9d>\"\u001b[0;36m, line \u001b[0;32m1\u001b[0m\n\u001b[0;31m    select c.cliente, v.Data, p.Produto, vd.Vendedor, iv.ValorTotal\u001b[0m\n\u001b[0m           ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m invalid syntax\n"
+          ]
+        }
+      ],
+      "source": [
+        "select c.cliente, v.Data, p.Produto, vd.Vendedor, iv.ValorTotal\n",
+        "from itensvendas iv\n",
+        "inner join produtos p on (p.Produtoid = iv.Produtoid)\n",
+        "inner join vendas v on (v.VendasID = iv.VendasID)\n",
+        "inner join vendedores vd on (vd.vendedorID = v.vendedorID)\n",
+        "inner join clientes c on (c.clienteid = v.clienteid)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "zLZ6z4luATjv"
+      },
+      "source": [
+        "# Qual é a principal vantagem do processamento em memória no Spark?\n",
+        "Melhorias significativas no desempenho em relação ao processamento em disco\n",
+        "O processamento em memória é muito mais rápido do que o processamento em disco porque os dados não precisam ser lidos e gravados no disco novamente. Isso pode acelerar significativamente o tempo de execução de tarefas, como consultas SQL, análise de dados e aprendizado de máquina.\n",
+        "\n",
+        "Além disso, o processamento em memória pode ajudar a reduzir os requisitos de hardware necessários para executar o Spark. Isso ocorre porque o Spark não precisa manter uma cópia de todos os dados em memória. Em vez disso, ele pode manter apenas os dados que são necessários para a tarefa atual em memória. Isso pode ajudar a economizar recursos, como memória e armazenamento.\n",
+        "\n",
+        "Por fim, o processamento em memória pode ajudar a aumentar a capacidade de armazenamento de dados. Isso ocorre porque o Spark pode manter mais dados em memória do que seria possível em disco. Isso pode ser útil para tarefas que exigem o acesso a grandes quantidades de dados, como análise de dados e aprendizado de máquina.\n",
+        "\n",
+        "No geral, o processamento em memória é uma vantagem significativa do Spark. Ele pode ajudar a melhorar o desempenho, reduzir os requisitos de hardware e aumentar a capacidade de armazenamento de dados."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "gRCPQYfCATjv"
+      },
+      "source": [
+        "# O que é o Spark Streaming?\n",
+        "Um pacote do Spark para processamento de dados de streaming\n",
+        "\n",
+        "O Spark Streaming é um pacote do Spark para processamento de dados de streaming. Ele permite que você processe dados que chegam em um fluxo contínuo, como dados de mídia social, dados de sensores e dados de log.\n",
+        "O Spark Streaming é construído em cima do Spark Core, o que significa que ele pode aproveitar as vantagens do processamento em memória e em cluster do Spark. Isso permite que o Spark Streaming processe grandes quantidades de dados de streaming de forma rápida e eficiente.\n",
+        "O Spark Streaming é uma ferramenta poderosa para uma variedade de tarefas, incluindo análise de dados em tempo real, aprendizado de máquina em tempo real e monitoramento em tempo real.\n",
+        "Aqui estão alguns exemplos de como o Spark Streaming pode ser usado:\n",
+        "Analisar dados de mídia social em tempo real para detectar tendências e padrões.\n",
+        "Monitorar dados de sensores em tempo real para detectar anomalias.\n",
+        "Aprender com dados de log em tempo real para melhorar o desempenho de aplicativos.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "sNS9CWRjATjv"
+      },
+      "source": [
+        "# O que é lazy evaluation no Spark?\n",
+        " Um recurso que permite que o Spark adie a avaliação de expressões até que seja absolutamente necessário.\n",
+        "\n",
+        "    A avaliação preguiçosa é uma técnica que adia a avaliação de expressões até que sejam necessárias. Isso pode ser útil para melhorar o desempenho, pois significa que o Spark não precisa avaliar expressões que não serão usadas.\n",
+        "\n",
+        "No Spark, a avaliação preguiçosa é usada para várias operações, incluindo a criação de DataFrames, a execução de consultas SQL e o cálculo de estatísticas. Isso permite que o Spark processe grandes quantidades de dados de forma eficiente, mesmo quando os dados estão distribuídos em vários nós.\n",
+        "\n",
+        "Por exemplo, se você criar um DataFrame a partir de um arquivo CSV, o Spark não avaliará o arquivo inteiro imediatamente. Em vez disso, ele avaliará o arquivo linha por linha, conforme necessário. Isso pode economizar muito tempo e memória, especialmente para arquivos grandes.\n",
+        "\n",
+        "A avaliação preguiçosa é uma técnica poderosa que pode melhorar o desempenho do Spark de várias maneiras. É um dos recursos que tornam o Spark uma ferramenta tão poderosa para o processamento de dados.    "
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Q-8khZVMATjv"
+      },
+      "source": [
+        "# O que é um cluster no contexto do Spark?\n",
+        "Um conjunto de computadores interconectados que executam o Spark em paralelo.\n",
+        "Um cluster é um grupo de computadores que estão conectados entre si e trabalham juntos para realizar uma tarefa comum. No contexto do Spark, um cluster é um grupo de nós que executam o Spark. Os nós de um cluster podem ser máquinas físicas ou máquinas virtuais.\n",
+        "\n",
+        "O Spark é projetado para ser executado em um cluster. Isso permite que o Spark processe grandes quantidades de dados de forma rápida e eficiente. Quando o Spark está executando em um cluster, ele distribui os dados em vários nós e executa as tarefas em paralelo. Isso pode acelerar o processamento de dados significativamente.\n",
+        "\n",
+        "Por exemplo, se você estiver usando o Spark para processar um grande conjunto de dados, poderá distribuir os dados em vários nós do cluster. O Spark então executará as tarefas em paralelo em cada nó. Isso pode acelerar o processamento de dados significativamente.\n",
+        "\n",
+        "O Spark é uma ferramenta poderosa para processamento de dados. É capaz de processar grandes quantidades de dados de forma rápida e eficiente. Isso o torna uma ferramenta ideal para uma variedade de tarefas, incluindo análise de dados, aprendizado de máquina e big data."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "kIqeAgoqATjv"
+      },
+      "source": [
+        "# O que é um RDD no Spark?\n",
+        "Um tipo de dado imutável no Spark.\n",
+        "Um RDD (Resilient Distributed Dataset) é um tipo de dado imutável no Spark. Ele é uma coleção de dados que pode ser distribuída em vários nós de um cluster. Os RDDs são imutáveis, o que significa que eles não podem ser alterados após sua criação. Isso os torna adequados para o processamento de dados em paralelo.\n",
+        "\n",
+        "Os RDDs são criados a partir de uma variedade de fontes, incluindo arquivos, bancos de dados e streams de dados. Eles podem ser processados usando uma variedade de operações, como mapeamento, redução e classificação.\n",
+        "\n",
+        "Os RDDs são uma parte fundamental do Spark. Eles são usados para armazenar e processar dados em um cluster. Os RDDs são uma ferramenta poderosa para uma variedade de tarefas, incluindo análise de dados, aprendizado de máquina e big data."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "fo5APo2nATjw"
+      },
+      "source": [
+        "# Qual é a principal diferença entre um RDD e um DataFrame no Spark?\n",
+        "\n",
+        " Um DataFrame é uma estrutura de dados mais eficiente para consulta e processamento, enquanto um RDD é mais flexível.\n",
+        "\n",
+        "Um RDD (Resilient Distributed Dataset) é uma coleção de dados que pode ser distribuída em vários nós de um cluster. Os RDDs são imutáveis, o que significa que eles não podem ser alterados após sua criação. Isso os torna adequados para o processamento de dados em paralelo.\n",
+        "\n",
+        "Um DataFrame é uma estrutura de dados semelhante a uma tabela que pode ser criada a partir de uma variedade de fontes, incluindo arquivos, bancos de dados e streams de dados. Os DataFrames são organizados em colunas e linhas, e podem ser processados usando uma variedade de operações, como consultas SQL, agregações e visualizações.\n",
+        "\n",
+        "Os DataFrames são mais eficientes para consulta e processamento do que os RDDs porque são organizados de forma estruturada e podem ser processados usando uma variedade de APIs, incluindo o Spark SQL. Os RDDs, por outro lado, são mais flexíveis porque podem ser criados a partir de uma variedade de fontes e podem ser processados usando uma variedade de operações.\n",
+        "\n",
+        "Em geral, os DataFrames são uma melhor escolha para tarefas de consulta e processamento, enquanto os RDDs são uma melhor escolha para tarefas que exigem mais flexibilidade."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "sJrG8LS2ATjw"
+      },
+      "source": [
+        "# Qual é a principal diferença entre transformações e ações no Spark?\n",
+        "As transformações são executadas de forma preguiçosa (lazy), enquanto as ações são executadas de forma imediata (eager).\n",
+        "\n",
+        "No Spark, as transformações são operações que produzem um novo DataFrame a partir de um existente. As ações são operações que retornam um valor ou escrevem um novo DataFrame para um arquivo.\n",
+        "\n",
+        "As transformações são executadas de forma preguiçosa, o que significa que elas não são executadas imediatamente. Em vez disso, elas são armazenadas em uma pilha de execução. As ações são executadas quando a pilha de execução for concluída e retornam um valor ou escrevem um novo DataFrame para um arquivo.\n",
+        "\n",
+        "A principal diferença entre transformações e ações é que as transformações são executadas em paralelo, enquanto as ações são executadas sequencialmente. Isso significa que as transformações podem ser usadas para processar grandes quantidades de dados de forma eficiente, enquanto as ações podem ser usadas para retornar um valor ou escrever um novo DataFrame para um arquivo de forma confiável.\n",
+        "\n",
+        "Aqui estão alguns exemplos de transformações:\n",
+        "\n",
+        "filter(): Esta transformação retorna um novo DataFrame com as linhas que atendem a um determinado critério.\n",
+        "groupBy(): Esta transformação agrupa linhas com base em um determinado critério e retorna um novo DataFrame com as estatísticas das linhas agrupadas.\n",
+        "join(): Esta transformação combina dois DataFrames com base em um determinado critério e retorna um novo DataFrame com as linhas dos dois DataFrames combinadas.\n",
+        "Aqui estão alguns exemplos de ações:\n",
+        "\n",
+        "count(): Esta ação retorna o número de linhas em um DataFrame.\n",
+        "collect(): Esta ação retorna todas as linhas em um DataFrame como um RDD.\n",
+        "write(): Esta ação escreve um DataFrame para um arquivo.\n",
+        "O Spark é uma ferramenta poderosa para processar grandes quantidades de dados. As transformações e ações são as duas principais operações que podem ser usadas para trabalhar com DataFrames e SQLContexts no Spark."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "sffRCo-pATjw"
+      },
+      "outputs": [],
+      "source": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "4E2zD6pDATjw"
+      },
+      "outputs": [],
+      "source": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "ODHWKLqrATjw"
+      },
+      "outputs": [],
+      "source": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "X1KOjFunATjw"
+      },
+      "outputs": [],
+      "source": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.7.6"
+    },
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
